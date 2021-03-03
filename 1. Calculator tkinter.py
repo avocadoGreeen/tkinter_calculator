@@ -61,17 +61,28 @@ def calculate():
         clear()
         entry_calc['state'] = DISABLED
 
-
 def calculate_per():
+    global value1
+    global value2
     value = entry_calc.get()
     if value[0] == "0" and len(value) == 1:
         clear()
     elif '+' in value or '-' in value or '÷' in value or '×' in value:
-        calculate()
-        value = entry_calc.get()
+        k = 0
+        for i in value:
+            if i in "+-×÷":
+                value1 = value[:k]
+                value2 = value[k+1:]
+                value_k = value[k]
+                break
+            k += 1
+        value1 = int(value1)
+        value2 = int(value2)
+        result = (value1*value2) / 100
+        value = str(value1) + str(value_k) + str(result)
         entry_calc['state'] = NORMAL
         entry_calc.delete(0, END)
-        entry_calc.insert(0, float(value) / 100)
+        entry_calc.insert(0, eval(value))
         entry_calc['state'] = DISABLED
     else:
         entry_calc['state'] = NORMAL
@@ -89,10 +100,8 @@ def clear():
 
 def clear_last():
     value = entry_calc.get()
-    print(value)
     if value != "0":
         if len(value) < 1:
-            print('gg')
             entry_calc['state'] = NORMAL
             entry_calc.insert(0, '0')
             entry_calc['state'] = DISABLED
